@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#000000" />
+  <title>Mokap</title>
+  <link rel="stylesheet" href="src/style.css" />
+</head>
+<body>
+  <div id="app">
+
+    <!-- ── Camera View ──────────────────────────────────────────── -->
+    <section id="camera-view" class="view active" aria-label="Camera">
+
+      <!-- Live preview + crop-guide overlay -->
+      <div class="preview-wrapper">
+        <video id="camera-preview" autoplay muted playsinline></video>
+        <canvas id="crop-guide" aria-hidden="true"></canvas>
+
+        <!-- Recording badge -->
+        <div id="rec-badge" class="rec-badge" aria-live="assertive" hidden>
+          <span class="rec-dot"></span>REC
+        </div>
+
+        <!-- Camera error / permission overlay -->
+        <div id="camera-error" class="camera-error" hidden role="alert">
+          <div class="camera-error-icon">&#128247;</div>
+          <p id="camera-error-msg">Camera unavailable</p>
+          <button id="camera-retry-btn" class="retry-btn">Try Again</button>
+        </div>
+      </div>
+
+      <!-- Bottom controls -->
+      <div class="camera-controls">
+
+        <!-- Aspect-ratio preview toggle -->
+        <div class="aspect-row" role="group" aria-label="Preview aspect ratio">
+          <button class="ratio-btn active" data-ratio="16:9" aria-pressed="true">
+            <span class="ratio-icon ratio-landscape" aria-hidden="true"></span>
+            16:9
+          </button>
+          <button class="ratio-btn" data-ratio="9:16" aria-pressed="false">
+            <span class="ratio-icon ratio-portrait" aria-hidden="true"></span>
+            9:16
+          </button>
+          <span class="both-hint" aria-hidden="true">Both outputs will be saved</span>
+        </div>
+
+        <!-- Record -->
+        <div class="record-row">
+          <output id="rec-timer" class="rec-timer" aria-label="Recording time">00:00</output>
+          <button id="record-btn" class="record-btn" aria-label="Start recording">
+            <span class="record-btn-inner" aria-hidden="true"></span>
+          </button>
+          <span class="record-hint" aria-hidden="true">Tap to record</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Processing View ──────────────────────────────────────── -->
+    <section id="processing-view" class="view" aria-label="Processing" aria-live="polite">
+      <div class="processing-body">
+        <div class="spinner" aria-hidden="true"></div>
+        <h2>Processing…</h2>
+        <p id="processing-msg">Generating 16:9 and 9:16 outputs</p>
+      </div>
+    </section>
+
+    <!-- ── Results View ─────────────────────────────────────────── -->
+    <section id="results-view" class="view" aria-label="Results">
+
+      <header class="results-header">
+        <button id="back-btn" class="back-btn" aria-label="Record again">&#8592; Record Again</button>
+        <h1>Your Videos</h1>
+      </header>
+
+      <div class="results-grid">
+
+        <!-- 16:9 card -->
+        <article class="result-card" aria-label="Horizontal 16:9 video">
+          <div class="card-label">
+            <span class="badge badge-landscape">16:9</span>
+            <span>Horizontal</span>
+          </div>
+          <div class="video-frame frame-landscape">
+            <video id="video-16x9" controls playsinline></video>
+          </div>
+          <a id="dl-16x9" class="dl-btn" download="mokap-16x9.webm">&#11015; Download 16:9</a>
+        </article>
+
+        <!-- 9:16 card -->
+        <article class="result-card" aria-label="Vertical 9:16 video">
+          <div class="card-label">
+            <span class="badge badge-portrait">9:16</span>
+            <span>Vertical</span>
+          </div>
+          <div class="video-frame frame-portrait">
+            <video id="video-9x16" controls playsinline></video>
+          </div>
+          <a id="dl-9x16" class="dl-btn" download="mokap-9x16.webm">&#11015; Download 9:16</a>
+        </article>
+
+      </div>
+    </section>
+
+  </div><!-- #app -->
+
+  <script src="src/app.js"></script>
+</body>
+</html>
