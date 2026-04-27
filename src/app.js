@@ -327,7 +327,8 @@ const MokapApp = (() => {
 
     const src = document.createElement('video');
     src.src         = srcUrl;
-    src.muted       = true;
+    src.muted       = false;
+    src.volume      = 0;
     src.playsInline = true;
 
     await waitForEvent(src, 'loadedmetadata', 10_000);
