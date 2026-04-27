@@ -1,0 +1,449 @@
+/* ── Reset & custom properties ─────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --red:           #ff3b30;
+  --blue:          #0a84ff;
+  --green:         #30d158;
+  --bg:            #000;
+  --bg-card:       #1c1c1e;
+  --bg-overlay:    rgba(0, 0, 0, 0.65);
+  --text:          #fff;
+  --text-muted:    rgba(255, 255, 255, 0.55);
+  --border:        rgba(255, 255, 255, 0.15);
+  --radius-card:   16px;
+  --radius-pill:   999px;
+}
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── App shell ─────────────────────────────────────────────────── */
+#app {
+  height: 100vh;
+  height: 100dvh;   /* dynamic viewport height on mobile (override for supporting browsers) */
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── View management ───────────────────────────────────────────── */
+.view {
+  position: absolute;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.view.active {
+  display: flex;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   CAMERA VIEW
+══════════════════════════════════════════════════════════════════ */
+#camera-view {
+  background: #000;
+}
+
+/* Live preview fills the space above controls */
+.preview-wrapper {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: #000;
+}
+
+#camera-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+#crop-guide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* REC badge */
+.rec-badge {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 5px 14px;
+  border-radius: var(--radius-pill);
+}
+
+.rec-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--red);
+  border-radius: 50%;
+  animation: blink 1s step-start infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+/* ── Camera controls strip ─────────────────────────────────────── */
+.camera-controls {
+  padding: 14px 20px max(20px, env(safe-area-inset-bottom));
+  background: var(--bg-overlay);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Aspect-ratio toggle row */
+.aspect-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ratio-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+
+.ratio-btn.active {
+  border-color: var(--blue);
+  color: var(--blue);
+  background: rgba(10, 132, 255, 0.15);
+}
+
+.ratio-icon {
+  display: block;
+  border: 1.5px solid currentColor;
+  border-radius: 2px;
+}
+
+.ratio-landscape { width: 18px; height: 11px; }
+.ratio-portrait  { width: 11px; height: 18px; }
+
+.both-hint {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: right;
+  max-width: 90px;
+  line-height: 1.3;
+}
+
+/* Record row */
+.record-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  position: relative;
+}
+
+.rec-timer {
+  position: absolute;
+  left: 0;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  font-variant-numeric: tabular-nums;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.rec-timer.visible {
+  opacity: 1;
+}
+
+.record-hint {
+  position: absolute;
+  right: 0;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* Record button */
+.record-btn {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 4px solid #fff;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.1s;
+  padding: 0;
+}
+
+.record-btn:active {
+  transform: scale(0.92);
+}
+
+.record-btn-inner {
+  display: block;
+  width: 52px;
+  height: 52px;
+  background: var(--red);
+  border-radius: 50%;
+  transition: border-radius 0.3s ease, width 0.3s ease, height 0.3s ease;
+}
+
+.record-btn.recording .record-btn-inner {
+  border-radius: 8px;
+  width: 28px;
+  height: 28px;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   PROCESSING VIEW
+══════════════════════════════════════════════════════════════════ */
+#processing-view {
+  background: var(--bg);
+  align-items: center;
+  justify-content: center;
+}
+
+.processing-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  padding: 0 32px;
+  text-align: center;
+}
+
+.processing-body h2 {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+#processing-msg {
+  font-size: 14px;
+  color: var(--text-muted);
+  max-width: 260px;
+  line-height: 1.5;
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid rgba(255, 255, 255, 0.15);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   RESULTS VIEW
+══════════════════════════════════════════════════════════════════ */
+#results-view {
+  background: var(--bg);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.results-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  padding: 14px 16px;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+
+.back-btn {
+  background: transparent;
+  border: none;
+  color: var(--blue);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 4px 0;
+  white-space: nowrap;
+}
+
+.results-header h1 {
+  flex: 1;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 600;
+  /* balance the back button */
+  padding-right: 100px;
+}
+
+.results-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding: 20px 16px max(24px, env(safe-area-inset-bottom));
+}
+
+/* Result card */
+.result-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.badge-landscape { background: var(--blue); }
+.badge-portrait  { background: var(--green); }
+
+/* Video frames */
+.video-frame {
+  width: 100%;
+  background: #111;
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  position: relative;
+}
+
+.frame-landscape {
+  aspect-ratio: 16 / 9;
+}
+
+.frame-portrait {
+  aspect-ratio: 9 / 16;
+  /* on small screens cap the height so both cards fit */
+  max-height: min(60vw, 340px);
+  margin: 0 auto;
+  width: auto;
+}
+
+.video-frame video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Download button */
+.dl-btn {
+  display: block;
+  text-align: center;
+  padding: 13px 16px;
+  background: var(--bg-card);
+  color: var(--blue);
+  border-radius: var(--radius-card);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  transition: opacity 0.15s;
+}
+
+.dl-btn:active {
+  opacity: 0.6;
+}
+
+/* ── Utility ────────────────────────────────────────────────────── */
+[hidden] {
+  display: none !important;
+}
+
+/* Camera error / permission overlay */
+.camera-error {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: rgba(0, 0, 0, 0.80);
+  padding: 32px;
+  text-align: center;
+}
+
+.camera-error-icon {
+  font-size: 52px;
+  line-height: 1;
+}
+
+.camera-error p {
+  font-size: 15px;
+  color: var(--text-muted);
+  max-width: 240px;
+  line-height: 1.5;
+}
+
+.retry-btn {
+  margin-top: 6px;
+  padding: 10px 28px;
+  border: 1.5px solid var(--blue);
+  border-radius: var(--radius-pill);
+  background: rgba(10, 132, 255, 0.15);
+  color: var(--blue);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.retry-btn:active {
+  opacity: 0.6;
+}
