@@ -57,10 +57,10 @@ html, body {
   background: #000;
 }
 
-/* Live preview fills the space above controls */
+/* Live preview fills the entire screen */
 .preview-wrapper {
-  flex: 1;
-  position: relative;
+  position: absolute;
+  inset: 0;
   overflow: hidden;
   background: #000;
 }
@@ -115,6 +115,10 @@ html, body {
 
 /* ── Camera controls strip ─────────────────────────────────────── */
 .camera-controls {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
   padding: 14px 20px max(20px, env(safe-area-inset-bottom));
   background: var(--bg-overlay);
   backdrop-filter: blur(12px);
