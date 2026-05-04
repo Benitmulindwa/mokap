@@ -117,8 +117,7 @@ html, body {
 .camera-controls {
   position: absolute;
   bottom: 0;
-  left: 0;
-  right: 0;
+  inset-inline: 0;
   padding: 14px 20px max(20px, env(safe-area-inset-bottom));
   background: var(--bg-overlay);
   backdrop-filter: blur(12px);
