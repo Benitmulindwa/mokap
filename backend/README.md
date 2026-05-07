@@ -39,3 +39,12 @@ The existing frontend in this repository is still a static app.
    php artisan serve --host=127.0.0.1 --port=8000
    ```
 3. Use `http://127.0.0.1:8000` as the backend/API base URL from the frontend.
+
+## Authentication API (Sanctum token)
+
+The backend includes token-based authentication endpoints:
+
+- `POST /api/register` → create account + return bearer token
+- `POST /api/login` → authenticate + return bearer token
+- `GET /api/user` → get authenticated user (`Authorization: Bearer <token>`)
+- `POST /api/logout` → revoke current token (`Authorization: Bearer <token>`)
