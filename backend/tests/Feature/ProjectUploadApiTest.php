@@ -54,7 +54,7 @@ class ProjectUploadApiTest extends TestCase
         $this->assertSame('uploaded', $project->status);
         $this->assertDatabaseHas('uploads', [
             'project_id' => $project->id,
-            'mime' => 'text/plain',
+            'mime' => 'video/webm',
             'size_bytes' => strlen('fake-video-content'),
         ]);
 
