@@ -313,7 +313,12 @@ const MokapApp = (() => {
       throw new Error('Project creation did not return project_id');
     }
 
-    const ext = rawBlob.type === 'video/mp4' ? 'mp4' : 'webm';
+    const extByMime = {
+      'video/mp4': 'mp4',
+      'video/webm': 'webm',
+      'video/quicktime': 'mov',
+    };
+    const ext = extByMime[rawBlob.type] || 'webm';
     const file = new File([rawBlob], `recording.${ext}`, {
       type: rawBlob.type || 'video/webm',
     });
