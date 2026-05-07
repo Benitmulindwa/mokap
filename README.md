@@ -55,3 +55,7 @@ python3 -m http.server 8080
 | Safari < 17 (iOS) | ✅ | ⚠️ Falls back to original |
 
 On browsers where `HTMLCanvasElement.captureStream` is unavailable (older Safari / iOS), the app gracefully falls back to offering the original recording for download in both slots.
+
+## Backend
+
+A Laravel backend is available in [`/backend`](./backend). See [`/backend/README.md`](./backend/README.md) for local API setup and run instructions.
