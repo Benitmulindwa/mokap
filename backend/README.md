@@ -4,7 +4,7 @@ This directory contains the Laravel backend for Mokap.
 
 ## Requirements
 
-- PHP **8.2+** (Laravel 13 currently supports PHP 8.2, 8.3, or 8.4)
+- PHP **8.3+** (this project currently requires PHP 8.3+ via `composer.json`)
 - [Composer](https://getcomposer.org/)
 - Optional database (SQLite, MySQL, MariaDB, or PostgreSQL)
 
