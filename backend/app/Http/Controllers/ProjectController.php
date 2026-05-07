@@ -22,7 +22,7 @@ class ProjectController extends Controller
     public function upload(Request $request, Project $project): JsonResponse
     {
         $validated = $request->validate([
-            'video' => ['required', 'file'],
+            'video' => ['required', 'file', 'max:102400', 'mimes:webm,mp4,mov', 'mimetypes:video/webm,video/mp4,video/quicktime'],
         ]);
 
         $file = $validated['video'];

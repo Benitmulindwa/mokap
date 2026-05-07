@@ -313,7 +313,7 @@ const MokapApp = (() => {
       throw new Error('Project creation did not return project_id');
     }
 
-    const ext = rawBlob.type.includes('mp4') ? 'mp4' : 'webm';
+    const ext = rawBlob.type === 'video/mp4' ? 'mp4' : 'webm';
     const file = new File([rawBlob], `recording.${ext}`, {
       type: rawBlob.type || 'video/webm',
     });
@@ -339,6 +339,7 @@ const MokapApp = (() => {
       await uploadRawRecording(rawBlob);
     } catch (err) {
       console.error('[Mokap] raw upload error:', err);
+      processingMsg.textContent = 'Upload failed; processing locally only.';
     }
 
     try {
