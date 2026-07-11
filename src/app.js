@@ -299,9 +299,53 @@ const MokapApp = (() => {
   }
 
   /* ---- Post-processing --------------------------------------- */
+  async function uploadRawRecording(rawBlob) {
+    const projectResponse = await fetch('/api/projects', {
+      method: 'POST',
+    });
+
+    if (!projectResponse.ok) {
+      throw new Error(`Project creation failed (${projectResponse.status})`);
+    }
+
+    const { project_id: projectId } = await projectResponse.json();
+    if (!projectId) {
+      throw new Error('Project creation did not return project_id');
+    }
+
+    const extByMime = {
+      'video/mp4': 'mp4',
+      'video/webm': 'webm',
+      'video/quicktime': 'mov',
+    };
+    const ext = extByMime[rawBlob.type] || 'webm';
+    const file = new File([rawBlob], `recording.${ext}`, {
+      type: rawBlob.type || 'video/webm',
+    });
+
+    const formData = new FormData();
+    formData.append('video', file);
+
+    const uploadResponse = await fetch(`/api/projects/${projectId}/upload`, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!uploadResponse.ok) {
+      throw new Error(`Upload failed (${uploadResponse.status})`);
+    }
+  }
+
   async function onRecordingStop() {
     const mimeType = recordedChunks[0]?.type || 'video/webm';
     const rawBlob  = new Blob(recordedChunks, { type: mimeType });
+
+    try {
+      await uploadRawRecording(rawBlob);
+    } catch (err) {
+      console.error('[Mokap] raw upload error:', err);
+      processingMsg.textContent = 'Upload failed; processing locally only.';
+    }
 
     try {
       processingMsg.textContent = 'Analyzing source…';
